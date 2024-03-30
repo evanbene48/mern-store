@@ -13,7 +13,7 @@ const createUser = asyncHandler(async (req, res) => {
   
   const userExists = await User.findOne({ email });
   if (userExists){
-    res.status(400).send("User already exists");
+    res.status(400).json("User already exists");
     return;
   } 
   const salt = await bcrypt.genSalt(10);
@@ -31,7 +31,7 @@ const createUser = asyncHandler(async (req, res) => {
       isAdmin: newUser.isAdmin,
     });
   } catch (error) {
-    res.status(400);
+    
     throw new Error("Invalid user data");
   }
 });
@@ -47,15 +47,56 @@ const getUsers = asyncHandler(async (req, res) => {
       users
     })
   } catch (error) {
-    res.status(400);
+    
     throw new Error(`${error.message}`);
   }
 
   
 })
 
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  console.log(email);
+  console.log(password);
+
+  try {
+    //find the user with email
+    const existingUser = await User.findOne({ email });
+
+    if(!existingUser){
+      res.status(404).json("User not found");
+      return;
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+
+    if (!isPasswordValid) {
+      res.status(401).json("Wrong password");
+      return;
+    }
+
+    createToken(res, existingUser._id);
+
+    res.status(200).json({
+      _id: existingUser._id,
+      username: existingUser.username,
+      email: existingUser.email,
+      isAdmin: existingUser.isAdmin,
+    })
+  } catch (error) {
+    throw new Error(`${error.message}`);
+  }
+  
+  
+});
+
 
 export {
     createUser,
-    getUsers
+    getUsers,
+    loginUser
   };
