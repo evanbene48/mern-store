@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  createUser, getAllUsers, loginUser, logoutUser
+  createUser, getAllUsers, getCurrentUserProfile, loginUser, logoutUser
 } from "../controllers/user.controller.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
@@ -14,5 +14,7 @@ router.post("/loginUser", loginUser)
 router.post("/logout", logoutUser)
 //get all user
 router.get("/getAllUsers", authenticate, authorizeAdmin, getAllUsers)
+// get user profile
+router.get("/profile", authenticate, getCurrentUserProfile)
 
 export default router;

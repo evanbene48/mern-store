@@ -36,24 +36,6 @@ export const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-export const getAllUsers = asyncHandler(async (req, res) => {
-  try {
-    const users = await User.find({})
-      // .sort({ createdAt: sortDirection })
-      // .skip(startIndex)
-      // .limit(limit);
-
-    res.status(200).json({
-      users
-    })
-  } catch (error) {
-    
-    throw new Error(`${error.message}`);
-  }
-
-  
-})
-
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -91,7 +73,6 @@ export const loginUser = asyncHandler(async (req, res) => {
   
 });
 
-
 export const logoutUser = asyncHandler(async(req,res) =>{
 
   try {
@@ -110,3 +91,40 @@ export const logoutUser = asyncHandler(async(req,res) =>{
     throw new Error(`${error.message}`);
   }
 })
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+  try {
+    const users = await User.find({})
+      // .sort({ createdAt: sortDirection })
+      // .skip(startIndex)
+      // .limit(limit);
+
+    res.status(200).json({
+      users
+    })
+  } catch (error) {
+    
+    throw new Error(`${error.message}`);
+  }
+})
+
+export const getCurrentUserProfile = asyncHandler(async (req, res) => {
+  console.log("get current user profile")
+  try {
+    const user = await User.findById(req.user._id);
+    if(!user){
+      res.status(404).json("User not found.");
+      return;
+    }
+    
+    res.json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+    });
+
+  } catch (error) {
+    throw new Error(`${error.message}`);
+  }
+
+});
