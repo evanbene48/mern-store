@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import createToken from "../utils/createToken.js"
 
-const createUser = asyncHandler(async (req, res) => {
+export const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -36,7 +36,7 @@ const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-const getUsers = asyncHandler(async (req, res) => {
+export const getUsers = asyncHandler(async (req, res) => {
   try {
     const users = await User.find()
       // .sort({ createdAt: sortDirection })
@@ -54,7 +54,7 @@ const getUsers = asyncHandler(async (req, res) => {
   
 })
 
-const loginUser = asyncHandler(async (req, res) => {
+export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   console.log(email);
@@ -95,8 +95,21 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 
-export {
-    createUser,
-    getUsers,
-    loginUser
-  };
+export const logoutUser = asyncHandler(async(req,res) =>{
+
+  try {
+    res
+    .clearCookie('jwt')
+    .status(200)
+    .json('User has been signed out');
+
+    // res.cookie("jwt", "", {
+    //   httyOnly: true,
+    //   expires: new Date(0),
+    // });
+
+    // res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    throw new Error(`${error.message}`);
+  }
+})
