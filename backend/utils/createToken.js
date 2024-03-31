@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 const generateToken = (res, userId) => {
   
     // jwt = untuk bikin token
+    // tokennya berisi _id dari usernya
     //expiresIn = tokennya expired stlh berapa lama
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
         expiresIn: "30d",

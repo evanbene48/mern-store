@@ -36,9 +36,9 @@ export const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-export const getUsers = asyncHandler(async (req, res) => {
+export const getAllUsers = asyncHandler(async (req, res) => {
   try {
-    const users = await User.find()
+    const users = await User.find({})
       // .sort({ createdAt: sortDirection })
       // .skip(startIndex)
       // .limit(limit);
@@ -56,9 +56,6 @@ export const getUsers = asyncHandler(async (req, res) => {
 
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
-  console.log(email);
-  console.log(password);
 
   try {
     //find the user with email
