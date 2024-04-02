@@ -212,3 +212,32 @@ export const getUserById = asyncHandler(async(req,res,next)=>{
   res.json(user);
   
 })
+
+export const updateUserById = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+
+    if(!user){
+      res.status(404).json("User not found");
+      return;
+    }
+
+    user.username = req.body.username || user.username;
+    user.email = req.body.email || user.email;
+    user.isAdmin = Boolean(req.body.isAdmin);
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+
+  } catch (error) {
+    throw new Error(`Error : ${error.message}`);
+  }
+
+  
+});
