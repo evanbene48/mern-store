@@ -128,3 +128,45 @@ export const getCurrentUserProfile = asyncHandler(async (req, res) => {
   }
 
 });
+
+export const updateCurrentUserProfile = asyncHandler(async(req,res,next)=>{
+  // req.user ini udh dapet data di authenticate middleware
+  const {username, email, password} = req.body;
+
+  if(!username && !email && !password){
+    res.status(400).json("Please update at least one");
+    return;
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    res.status(404).json("User not found");
+    return;
+  }
+
+  //dibawah ini sama kyak
+  // if(username != null)
+  // user-username = username
+  //else
+  // user.username = user.username
+  user.username = username || user.username;
+  user.email = email || user.email;
+
+  if (password) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    user.password = hashedPassword;
+  }
+
+  try {
+    const updatedUser = await user.save();
+    res.json({
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      // isAdmin: updatedUser.isAdmin,
+    });    
+  } catch (error) {
+    throw new Error(`${error.message}`);
+  }
+})
