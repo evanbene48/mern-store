@@ -170,3 +170,45 @@ export const updateCurrentUserProfile = asyncHandler(async(req,res,next)=>{
     throw new Error(`${error.message}`);
   }
 })
+
+export const deleteUserById = asyncHandler(async(req,res,next)=>{
+  try {
+    const user = await User.findById(req.params.id);
+
+    console.log(user)
+    if(!user){
+      res.status(404).json("User not found");
+      return;
+    }
+  } catch (error) {
+    throw new Error(`Error : ${error.message}`);
+  }
+
+  if(user.isAdmin){
+    throw new Error("Cannot delete admin user");
+  }
+
+  try {
+    await User.deleteOne({ _id: user._id });
+    res.json({ message: "User removed" });
+  } catch (error) {
+    throw new Error(`Error : ${error.message}`);
+  }
+})
+
+export const getUserById = asyncHandler(async(req,res,next)=>{
+  
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+
+    if(!user){
+      res.status(404).json("User not found");
+      return;
+    }
+  } catch (error) {
+    throw new Error(`Error : ${error.message}`);
+  }
+  
+  res.json(user);
+  
+})
