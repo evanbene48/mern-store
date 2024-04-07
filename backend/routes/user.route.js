@@ -1,17 +1,21 @@
 import express from "express";
 import {
-  createUser, deleteUserById, getAllUsers, getCurrentUserProfile, getUserById, loginUser, logoutUser, updateCurrentUserProfile, updateUserById
+  register, deleteUserById, getAllUsers, 
+  getCurrentUserProfile, getUserById, 
+  logout, updateCurrentUserProfile, updateUserById, login
 } from "../controllers/user.controller.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
+// /api/users
+
 //create user
-router.post("/createUser", createUser)
+router.post("/register", register)
 //login
-router.post("/loginUser", loginUser)
+router.post("/login", login)
 //log out
-router.post("/logout", logoutUser)
+router.post("/logout", logout)
 //get all user
 router.get("/getAllUsers", authenticate, authorizeAdmin, getAllUsers)
 // get user profile

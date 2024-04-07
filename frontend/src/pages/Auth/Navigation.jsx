@@ -7,12 +7,41 @@ import {
     AiOutlineShoppingCart,
   } from "react-icons/ai";
 import { FaHeart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navigation.css";
+//redux
+import { useDispatch, useSelector } from 'react-redux';
+//slicer untuk melakukan update ke state
+import { logout } from "../../redux/features/auth/authSlice";
+import { useLoginMutation } from '../../redux/api/usersApiSlice';
 
 const Navigation = () => {
-    const [showSidebar, setShowSidebar] = useState(false);
-    const [showHome, setShowHome] = useState(false)
+  //reducer / redux
+  const { userInfo } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutApiCall = useLoginMutation()
+  
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [showHome, setShowHome] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const logoutHandler = async () => {
+    try {
+      await logoutApiCall().unwrap();
+      dispatch(logout());
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  console.log(userInfo)
 
   return (
     <div
@@ -83,6 +112,41 @@ const Navigation = () => {
               {/* <FavoritesCount /> */}
             {/* </div> */}
           </Link>
+        </div>
+
+        <div className="relative">
+          <button
+            onClick={toggleDropdown}
+            className="flex items-center text-gray-800 
+            focus:outline-none"
+          >
+            {userInfo? (
+              <span className="flex">{userInfo.username}</span>
+            ) : (<></>)}
+            {/* {userInfo ? (
+              <span className="text-white">{userInfo.username}</span>
+            ) : (
+              <></>
+            )}
+            {userInfo && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-4 w-4 ml-1 ${
+                  dropdownOpen ? "transform rotate-180" : ""
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="white"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d={dropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
+                />
+              </svg>
+            )} */}
+          </button>
         </div>
 
         <ul>

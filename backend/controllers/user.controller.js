@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import createToken from "../utils/createToken.js"
 
-export const createUser = asyncHandler(async (req, res) => {
+export const register = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -36,7 +36,7 @@ export const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-export const loginUser = asyncHandler(async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -73,7 +73,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   
 });
 
-export const logoutUser = asyncHandler(async(req,res) =>{
+export const logout = asyncHandler(async(req,res) =>{
 
   try {
     res
