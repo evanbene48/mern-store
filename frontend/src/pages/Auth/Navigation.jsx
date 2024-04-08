@@ -13,7 +13,7 @@ import "./Navigation.css";
 import { useDispatch, useSelector } from 'react-redux';
 //slicer untuk melakukan update ke state
 import { logout } from "../../redux/features/auth/authSlice";
-import { useLoginMutation } from '../../redux/api/usersApiSlice';
+import { useLogoutMutation } from '../../redux/api/usersApiSlice';
 
 const Navigation = () => {
   //reducer / redux
@@ -21,7 +21,11 @@ const Navigation = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const logoutApiCall = useLoginMutation()
+  // jadi logout dibawah ini bisa dikasih nama apa aja
+  // tpi nantinya untuk dipanggil mau dikasih nama 'mamamia'
+  // jg bisa, asal dibawah panggil 'mamamia' jg
+  const [logoutApiCall, {isLoading}] = useLogoutMutation()
+  // const [mamamia, {isLoading}] = useLogoutMutation()
   
   const [showSidebar, setShowSidebar] = useState(false);
   const [showHome, setShowHome] = useState(false)
@@ -31,18 +35,22 @@ const Navigation = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  console.log(userInfo)
+  console.log(isLoading)
+  
+
   const logoutHandler = async () => {
     try {
-      // await logoutApiCall().unwrap();
-      // dispatch(logout());
-      // navigate("/login");
+      // await mamamia().unwrap();
+      await logoutApiCall().unwrap();
+      dispatch(logout());
+      navigate("/login");
     } catch (error) {
-      // console.error(error);
+      console.error(error);
     }
   };
 
-  console.log(userInfo)
-
+  
   return (
     <div
     style={{ zIndex: 9999 }}
@@ -203,12 +211,12 @@ const Navigation = () => {
                 </Link>
               </li>
               <li>
-                {/* <button
+                <button
                   onClick={logoutHandler}
                   className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                 >
                   Logout
-                </button> */}
+                </button>
               </li>
             </ul>
           )}
