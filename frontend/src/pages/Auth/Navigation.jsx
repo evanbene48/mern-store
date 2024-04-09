@@ -35,8 +35,8 @@ const Navigation = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  console.log(userInfo)
-  console.log(isLoading)
+  // console.log(userInfo)
+  // console.log(isLoading)
   
 
   const logoutHandler = async () => {

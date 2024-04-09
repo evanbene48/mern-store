@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 import { useRegisterMutation } from '../../redux/api/usersApiSlice';
+import { setCredentials } from "../../redux/features/auth/authSlice";
+
 import Loader from '../../components/Loader';
 import { Link } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 function Register() {
   const [username, setName] = useState("");
@@ -11,21 +14,48 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [registerApiCall, {isLoading}] = useRegisterMutation()
   const {userInfo} = useSelector(state => state.auth);
 
+  //http://localhost:5173/register?redirect=/
+  // search = ?redirect=/
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
+  //redirect ambil data dari sp diatas dgn key 
+  // "redirect", kalau ada, kalau gk ada kasih '/'
   const redirect = sp.get("redirect") || "/";
 
-  console.log(redirect)
+  //console log area
+  // console.log(search)
+  // console.log(sp)
+  // console.log(redirect)
+  // console.log(haha)
 
-  const submitHandler = () =>{
-
-  }
+  //logicnya adalah = 
+  //1. kalau password sama confirm password gk match, out error
+  //2. 
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+    } else {
+      try {
+        const res = await registerApiCall({ username, email, password }).unwrap();
+        console.log(res);
+        // console.log(...res);
+        dispatch(setCredentials(res));
+        navigate(redirect);
+        toast.success("User successfully registered");
+      } catch (err) {
+        console.log(err);
+        toast.error(err.data.message);
+      }
+    }
+  };
 
   return (
     <section className="pl-[10rem] flex flex-wrap">
@@ -34,7 +64,9 @@ function Register() {
           Register
         </h1>
 
-        <form onSubmit={submitHandler} className="container w-[40rem]">
+        <form onSubmit={submitHandler} 
+          className="container w-[40rem]"
+        >
           <div className="my-[2rem]">
             <label
               htmlFor="name"
