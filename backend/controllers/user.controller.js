@@ -13,7 +13,7 @@ export const register = asyncHandler(async (req, res) => {
   
   const userExists = await User.findOne({ email });
   if (userExists){
-    res.status(400).json("User already exists");
+    res.status(400).json({message : "User already exists"});
     return;
   } 
   const salt = await bcrypt.genSalt(10);
@@ -44,7 +44,7 @@ export const login = asyncHandler(async (req, res) => {
     const existingUser = await User.findOne({ email });
 
     if(!existingUser){
-      res.status(404).json("User not found");
+      res.status(404).json({message : "User not found"});
       return;
     }
 
@@ -54,7 +54,7 @@ export const login = asyncHandler(async (req, res) => {
     );
 
     if (!isPasswordValid) {
-      res.status(401).json("Wrong password");
+      res.status(401).json({message : "Wrong password"});
       return;
     }
 
@@ -113,7 +113,7 @@ export const getCurrentUserProfile = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if(!user){
-      res.status(404).json("User not found.");
+      res.status(404).json({message : "User not found."});
       return;
     }
     
@@ -134,13 +134,13 @@ export const updateCurrentUserProfile = asyncHandler(async(req,res,next)=>{
   const {username, email, password} = req.body;
 
   if(!username && !email && !password){
-    res.status(400).json("Please update at least one");
+    res.status(400).json({message : "Please update at least one"});
     return;
   }
 
   const user = await User.findById(req.user._id);
   if (!user) {
-    res.status(404).json("User not found");
+    res.status(404).json({message : "User not found"});
     return;
   }
 
@@ -177,7 +177,7 @@ export const deleteUserById = asyncHandler(async(req,res,next)=>{
 
     console.log(user)
     if(!user){
-      res.status(404).json("User not found");
+      res.status(404).json({message : "User not found"});
       return;
     }
   } catch (error) {
@@ -202,7 +202,7 @@ export const getUserById = asyncHandler(async(req,res,next)=>{
     const user = await User.findById(req.params.id).select("-password");
 
     if(!user){
-      res.status(404).json("User not found");
+      res.status(404).json({message : "User not found"});
       return;
     }
   } catch (error) {
@@ -218,7 +218,7 @@ export const updateUserById = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id).select("-password");
 
     if(!user){
-      res.status(404).json("User not found");
+      res.status(404).json({message : "User not found"});
       return;
     }
 
