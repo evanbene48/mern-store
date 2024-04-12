@@ -100,7 +100,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
       // .limit(limit);
 
     res.status(200).json({
-      users
+      users:users
     })
   } catch (error) {
     
@@ -172,23 +172,18 @@ export const updateCurrentUserProfile = asyncHandler(async(req,res,next)=>{
 })
 
 export const deleteUserById = asyncHandler(async(req,res,next)=>{
+  console.log('delete user by id')
+
   try {
     const user = await User.findById(req.params.id);
-
-    console.log(user)
+    console.log('trycatch')
     if(!user){
       res.status(404).json({message : "User not found"});
       return;
     }
-  } catch (error) {
-    throw new Error(`Error : ${error.message}`);
-  }
-
-  if(user.isAdmin){
-    throw new Error("Cannot delete admin user");
-  }
-
-  try {
+    if(user.isAdmin){
+      throw new Error("Cannot delete admin user");
+    }
     await User.deleteOne({ _id: user._id });
     res.json({ message: "User removed" });
   } catch (error) {
